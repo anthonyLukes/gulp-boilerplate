@@ -1,0 +1,7 @@
+.o-grid {
+    @include clearfix();
+}
+
+.o-grid__col {
+    float: left;
+}
