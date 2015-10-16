@@ -1,29 +1,19 @@
-# README #
+# Overview #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This is a front-end boilerplate to aid in standing up a client-side application quickly. It's is intended to be platform agnostic and easy to extend for your needs. The only dependecies it has are node.js and npm. It utilizes (gulp)[http://gulpjs.com/] as well as (webpack)[https://webpack.github.io/] to compile and minify files.
 
-### What is this repository for? ###
+## What it does ##
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* SCSS compiling to CSS (using node sass so there is no ruby depency)
+* JS module bundling (using (webpack)[https://webpack.github.io/])
+* (Nunjucks)[https://mozilla.github.io/nunjucks/] static HTML compiling
 
-### How do I get set up? ###
+## How do I get set up? ##
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Install (node.js)[https://nodejs.org/en/] and npm
+* Run `npm install` from the root of the directory (Files from `/src` get compiled to `web`)
+* Run `gulp` or `gulp build` to build the project files once
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+### Other gulp tasks available ###
+* `gulp watch` will build the site and start watching files (.scss, .html, .js, or .json) for changes. Incremental builds will occur pertaining only to the type of file that was updated (i.e. changes to .scss files will only rebuild the css)
+* `gulp --prod` will rebuild the site and minify the CSS and JS (intended for production releases)
