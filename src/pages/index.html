@@ -2,6 +2,16 @@
 {% extends "templates/layouts/default.html" %}
 
 {% block content %}
-<h1>Hello world (from index page)</h1>
-{% include "templates/partials/hi.html" %}
+    <h1>Hello world (from index page)</h1>
+
+    {% include "templates/partials/hi.html" %}
+
+    {% for image in imageSets.set1.images %}
+        <div class="gallery__item">
+            <img src="{{image.src}}" alt="{{image.alt}}">
+        </div>
+    {% endfor %}
+
+    {% set images = imageSets.set2.images %}
+    {% include "templates/partials/images.html" %}
 {% endblock %}

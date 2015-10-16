@@ -14,6 +14,7 @@ var cssmin = require('gulp-cssmin');
 var del = require('del');
 var sequence  = require('run-sequence');
 var nunjucksRender = require('gulp-nunjucks-render');
+var data = require('gulp-data');
 
 
 var CONFIG = {
@@ -37,6 +38,9 @@ var CONFIG = {
     INPUT_PAGES: './src/pages/**/*.html', // pages to compile
     INPUT_ALL: './src/**/*.html', // files to watch
     OUTPUT: './web'
+  },
+  DATA: {
+    INPUT: './src/data/pageData.json'
   }
 };
 var SHOULD_WATCH = false;
@@ -71,18 +75,14 @@ gulp.task("webpack", function(callback) {
   });
 });
 
-gulp.task('configureTemplates', function () {
-  nunjucksRender.nunjucks.configure(['src/']);
-});
-
-gulp.task('buildtemplates', function () {
-
-});
-
 gulp.task('templates', function () {
   nunjucksRender.nunjucks.configure(['src/'], {watch: false});
   del(['web/*.html']);
+  delete require.cache[require.resolve(CONFIG.DATA.INPUT)]; // clear the json from cache before loading
   return gulp.src('src/pages/*.html')
+      .pipe(data(function() {
+          return require(CONFIG.DATA.INPUT);
+      }))
       .pipe(nunjucksRender())
       .pipe(gulp.dest('web'));
 });
@@ -96,6 +96,7 @@ gulp.task('watch', ['setWatchToTrue','build'], function() {
   gulp.watch(CONFIG.SASS.INPUT, ['sass']);
   gulp.watch(CONFIG.JS.INPUT_GLOB, ['webpack']);
   gulp.watch(CONFIG.HTML.INPUT_ALL, ['templates']);
+  gulp.watch(CONFIG.DATA.INPUT, ['templates']);
 });
 
 gulp.task('build', ['sass','webpack','templates'], function() {
