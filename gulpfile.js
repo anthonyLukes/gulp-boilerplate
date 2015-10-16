@@ -15,6 +15,7 @@ var del = require('del');
 var sequence  = require('run-sequence');
 var nunjucksRender = require('gulp-nunjucks-render');
 var data = require('gulp-data');
+var env = require('gulp-env');
 
 
 var CONFIG = {
@@ -37,13 +38,25 @@ var CONFIG = {
     INPUT: './src/templates', // templates for rendering engine to know about
     INPUT_PAGES: './src/pages/**/*.html', // pages to compile
     INPUT_ALL: './src/**/*.html', // files to watch
-    OUTPUT: './web'
+    OUTPUT: './web',
+    OUTPUT_GLOB: './web/*.html'
   },
   DATA: {
     INPUT: './src/data/pageData.json'
+  },
+  TEMPLATE_PATHS: {
+    JS: {
+      DEV: 'js/bundle.js',
+      PROD: 'js/bundle.min.js'
+    },
+    CSS: {
+      DEV: 'styles/screen.css',
+      PROD: 'styles/screen.min.css'
+    }
   }
 };
 var SHOULD_WATCH = false;
+var IS_PROD = argv[CONFIG.PROD_FLAG];
 
 gulp.task('sass', function () {
   del(['web/styles/*']);
@@ -78,13 +91,33 @@ gulp.task('webpack', function(callback) {
 gulp.task('templates', function () {
   nunjucksRender.nunjucks.configure(['src/'], {watch: false});
   del(['web/*.html']);
+  var BUNDLE_PATHS = {};
+  if (IS_PROD) {
+    BUNDLE_PATHS['CSS'] = CONFIG.TEMPLATE_PATHS.CSS.PROD;
+    BUNDLE_PATHS['JS'] = CONFIG.TEMPLATE_PATHS.JS.PROD;
+  } else {
+    BUNDLE_PATHS['CSS'] = CONFIG.TEMPLATE_PATHS.CSS.DEV;
+    BUNDLE_PATHS['JS'] = CONFIG.TEMPLATE_PATHS.JS.DEV;
+  }
   delete require.cache[require.resolve(CONFIG.DATA.INPUT)]; // clear the json from cache before loading
   return gulp.src('src/pages/*.html')
     .pipe(data(function() {
         return require(CONFIG.DATA.INPUT);
     }))
+    .pipe(data(function() {
+        return {
+          "CSS_BUNDLE": BUNDLE_PATHS.CSS,
+          "JS_BUNDLE": BUNDLE_PATHS.JS
+        };
+    }))
     .pipe(nunjucksRender())
     .pipe(gulp.dest('web'));
+  gutil.log('IS_PROD');
+  if (IS_PROD) {
+    gulp.src('./web/index.html')
+      .pipe(replace(/@@jsbundle@@/, 'bundle.min.js'))
+      .pipe(gulp.dest('./web/'));
+  }
 });
 
 gulp.task('setWatchToTrue', function() {
@@ -100,7 +133,7 @@ gulp.task('watch', ['setWatchToTrue','build'], function() {
 });
 
 gulp.task('build', ['sass','webpack','templates'], function() {
-  if (argv[CONFIG.PROD_FLAG]) {
+  if (IS_PROD) {
     // uglify js
     gulp
       .src(CONFIG.JS.OUTPUT_DIR + CONFIG.JS.OUTPUT_FILE)

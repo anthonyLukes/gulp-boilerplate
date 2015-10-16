@@ -7,12 +7,12 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="styles/screen.css">
+        <link rel="stylesheet" href="{{CSS_BUNDLE}}">
     </head>
     <body>
         <div class="header">header (from layout template)</div>
         {% block content %} {% endblock %}
-        <script src="js/bundle.js"></script>
+        <script src="{{JS_BUNDLE}}"></script>
     </body>
 </html>
 
