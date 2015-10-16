@@ -7,11 +7,12 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="web/styles/screen.css">
+        <link rel="stylesheet" href="styles/screen.css">
     </head>
     <body>
-
-        Hello world!
-        <script src="web/js/bundle.js"></script>
+        <div class="header">header (from layout template)</div>
+        {% block content %} {% endblock %}
+        <script src="js/bundle.js"></script>
     </body>
 </html>
+
