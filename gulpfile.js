@@ -4,8 +4,8 @@ var gulp = require('gulp');
 var gutil = require("gulp-util");
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
-var webpack = require("webpack");
-var WebpackDevServer = require("webpack-dev-server");
+var webpack = require('webpack');
+var WebpackDevServer = require('webpack-dev-server');
 var argv = require('yargs').argv;
 var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
@@ -56,7 +56,7 @@ gulp.task('sass', function () {
 });
 
 
-gulp.task("webpack", function(callback) {
+gulp.task('webpack', function(callback) {
   del(['web/js/*']);
   // run webpack
   webpack({
@@ -67,8 +67,8 @@ gulp.task("webpack", function(callback) {
     },
     devtool: 'source-map'
   }, function(err, stats) {
-      if(err) throw new gutil.PluginError("webpack", err);
-      gutil.log("[webpack]", stats.toString({
+      if(err) throw new gutil.PluginError('webpack', err);
+      gutil.log('[webpack]', stats.toString({
           // output options
       }));
       callback();
@@ -80,11 +80,11 @@ gulp.task('templates', function () {
   del(['web/*.html']);
   delete require.cache[require.resolve(CONFIG.DATA.INPUT)]; // clear the json from cache before loading
   return gulp.src('src/pages/*.html')
-      .pipe(data(function() {
-          return require(CONFIG.DATA.INPUT);
-      }))
-      .pipe(nunjucksRender())
-      .pipe(gulp.dest('web'));
+    .pipe(data(function() {
+        return require(CONFIG.DATA.INPUT);
+    }))
+    .pipe(nunjucksRender())
+    .pipe(gulp.dest('web'));
 });
 
 gulp.task('setWatchToTrue', function() {
