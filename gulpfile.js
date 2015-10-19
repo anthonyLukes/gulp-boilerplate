@@ -121,12 +121,6 @@ gulp.task('templates', function () {
     }))
     .pipe(nunjucksRender())
     .pipe(gulp.dest('web'));
-  gutil.log('IS_PROD');
-  if (IS_PROD) {
-    gulp.src('./web/index.html')
-      .pipe(replace(/@@jsbundle@@/, 'bundle.min.js'))
-      .pipe(gulp.dest('./web/'));
-  }
 });
 
 gulp.task('setWatchToTrue', function() {
