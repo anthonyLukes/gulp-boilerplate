@@ -1,0 +1,23 @@
+$MARGIN: 2%;
+$TRUE_WIDTH: 100% / (100% + $MARGIN);
+
+@mixin o-blocks__getWidth($numOfCols) {
+  width: (1/$numOfCols * 100%) - ($MARGIN * $TRUE_WIDTH);
+}
+
+.o-blocks {
+  font-size: 0;
+  margin-left: -$MARGIN;
+}
+
+.o-blocks > * {
+  display: inline-block;
+  font-size: $BASE_FONT_SIZE;
+  margin-left: percentage(1 - $TRUE_WIDTH);
+}
+
+@for $i from 1 through 5 {
+    .o-blocks--#{$i}up > * {
+      @include o-blocks__getWidth($i);
+    }
+}
