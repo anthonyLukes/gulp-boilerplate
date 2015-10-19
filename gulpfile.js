@@ -17,6 +17,8 @@ var sequence  = require('run-sequence');
 var nunjucksRender = require('gulp-nunjucks-render');
 var data = require('gulp-data');
 var env = require('gulp-env');
+var imagemin = require('gulp-imagemin');
+var pngquant = require('imagemin-pngquant');
 
 
 var CONFIG = {
@@ -127,6 +129,18 @@ gulp.task('setWatchToTrue', function() {
   SHOULD_WATCH = true;
 });
 
+gulp.task('copyMedia', function() {
+  del(['web/media']).then(function() {
+    gulp.src('./src/media/**/*')
+      .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+            use: [pngquant()]
+        }))
+      .pipe(gulp.dest('./web/media'));
+  });
+});
+
 gulp.task('watch', ['setWatchToTrue','build'], function() {
   // setup up watches
   gulp.watch(CONFIG.SASS.INPUT, ['sass']);
@@ -135,7 +149,7 @@ gulp.task('watch', ['setWatchToTrue','build'], function() {
   gulp.watch(CONFIG.DATA.INPUT, ['templates']);
 });
 
-gulp.task('build', ['sass','webpack','templates'], function() {
+gulp.task('build', ['sass','webpack','templates','copyMedia'], function() {
   if (IS_PROD) {
     // uglify js
     gulp
