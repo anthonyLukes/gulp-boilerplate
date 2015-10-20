@@ -5,6 +5,7 @@ var gutil = require("gulp-util");
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var webpack = require('webpack');
+var gulpWebpack = require('webpack-stream');
 var argv = require('yargs').argv;
 var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
@@ -38,14 +39,16 @@ gulp.task('sass', function () {
 gulp.task('webpack', function(callback) {
   del(['web/js/*']);
   var webpackconfig = require('./webpack-config.js');
+  var callback = function(err, stats) {
+    if(err) throw new gutil.PluginError('webpack', err);
+    gutil.log('[webpack]', stats.toString({
+        // output options
+    }));
+  }
   // run webpack
-  webpack(webpackconfig, function(err, stats) {
-      if(err) throw new gutil.PluginError('webpack', err);
-      gutil.log('[webpack]', stats.toString({
-          // output options
-      }));
-      callback();
-  });
+  return gulp.src(CONFIG.JS.INPUT)
+    .pipe(gulpWebpack(webpackconfig, webpack, callback))
+    .pipe(gulp.dest(CONFIG.JS.OUTPUT_DIR));
 });
 
 gulp.task('templates', function () {
