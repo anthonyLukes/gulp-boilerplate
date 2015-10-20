@@ -5,7 +5,6 @@ var gutil = require("gulp-util");
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var webpack = require('webpack');
-var BowerWebpackPlugin = require("bower-webpack-plugin");
 var argv = require('yargs').argv;
 var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
@@ -82,13 +81,8 @@ gulp.task('webpack', function(callback) {
     },
     devtool: 'source-map',
     resolve: {
-      alias: {
-        jquery:"./bower_components/jquery,dist/jquery.js"
-      }
+      modulesDirectories: ['node_modules', 'bower_components'],
     },
-    plugins: [
-      new BowerWebpackPlugin()
-    ],
   }, function(err, stats) {
       if(err) throw new gutil.PluginError('webpack', err);
       gutil.log('[webpack]', stats.toString({

@@ -1,5 +1,3 @@
-var $ = require('jquery');
-
 function MyModule(options) {
     this.options = options;
 }
