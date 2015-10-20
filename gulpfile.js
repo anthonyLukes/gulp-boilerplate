@@ -144,6 +144,7 @@ gulp.task('watch', ['setWatchToTrue','build'], function() {
   gulp.watch(CONFIG.JS.INPUT_GLOB, ['webpack']);
   gulp.watch(CONFIG.HTML.INPUT_ALL, ['templates']);
   gulp.watch(CONFIG.DATA.INPUT, ['templates']);
+  gulp.watch(CONFIG.MEDIA.INPUT, ['copyMedia']);
 });
 
 gulp.task('build', ['sass','webpack','templates','copyMedia'], function() {
