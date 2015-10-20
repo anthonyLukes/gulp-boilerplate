@@ -6,7 +6,6 @@ var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var webpack = require('webpack');
 var BowerWebpackPlugin = require("bower-webpack-plugin");
-var WebpackDevServer = require('webpack-dev-server');
 var argv = require('yargs').argv;
 var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
