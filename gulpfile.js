@@ -37,18 +37,9 @@ gulp.task('sass', function () {
 
 gulp.task('webpack', function(callback) {
   del(['web/js/*']);
+  var webpackconfig = require('./webpack-config.js');
   // run webpack
-  webpack({
-    entry: CONFIG.JS.INPUT,
-    output: {
-      path: CONFIG.JS.OUTPUT_DIR,
-      filename: CONFIG.JS.OUTPUT_FILE
-    },
-    devtool: 'source-map',
-    resolve: {
-      modulesDirectories: ['node_modules', 'bower_components'],
-    },
-  }, function(err, stats) {
+  webpack(webpackconfig, function(err, stats) {
       if(err) throw new gutil.PluginError('webpack', err);
       gutil.log('[webpack]', stats.toString({
           // output options
