@@ -5,7 +5,7 @@ This is a front-end boilerplate to aid in standing up a client-side application 
 ## What it does ##
 
 * SCSS compiling to CSS (using node sass so there is no ruby depency)
-* JS module bundling (using [webpack](https://webpack.github.io/)
+* JS module bundling (using [webpack](https://webpack.github.io/))
 * [Nunjucks](https://mozilla.github.io/nunjucks/) static HTML compiling
 * Library package management via [bower](http://bower.io/)
 
