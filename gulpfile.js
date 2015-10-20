@@ -19,47 +19,8 @@ var imagemin = require('gulp-imagemin');
 var pngquant = require('imagemin-pngquant');
 
 
-var CONFIG = {
-  PROD_FLAG: 'prod',
-  SASS: {
-    INPUT: './src/styles/**/*.scss',
-    OUTPUT: './web/styles',
-    OPTIONS: {
-      ERR_LOG_TO_CONSOLE: true,
-      OUTPUT_STYLE: 'expanded'
-    }
-  },
-  JS: {
-    INPUT: './src/js/main.js',
-    INPUT_GLOB: './src/js/**/*.js',
-    OUTPUT_DIR: './web/js/',
-    OUTPUT_FILE: 'bundle.js'
-  },
-  HTML: {
-    INPUT: './src/templates', // templates for rendering engine to know about
-    INPUT_PAGES: './src/pages/**/*.html', // pages to compile
-    INPUT_ALL: './src/**/*.html', // files to watch
-    OUTPUT: './web',
-    OUTPUT_GLOB: './web/*.html'
-  },
-  DATA: {
-    INPUT: './src/data/pageData.json'
-  },
-  TEMPLATE_PATHS: {
-    JS: {
-      DEV: 'js/bundle.js',
-      PROD: 'js/bundle.min.js'
-    },
-    CSS: {
-      DEV: 'styles/screen.css',
-      PROD: 'styles/screen.min.css'
-    }
-  },
-  MEDIA: {
-    INPUT: './src/media/**/*',
-    OUTPUT: './web/media'
-  }
-};
+var CONFIG = require('./build-config.js');
+
 var SHOULD_WATCH = false;
 var IS_PROD = argv[CONFIG.PROD_FLAG];
 
@@ -99,13 +60,9 @@ gulp.task('webpack', function(callback) {
 gulp.task('templates', function () {
   nunjucksRender.nunjucks.configure(['src/'], {watch: false});
   del(['web/*.html']);
-  var BUNDLE_PATHS = {};
+  var env = 'DEV';
   if (IS_PROD) {
-    BUNDLE_PATHS['CSS'] = CONFIG.TEMPLATE_PATHS.CSS.PROD;
-    BUNDLE_PATHS['JS'] = CONFIG.TEMPLATE_PATHS.JS.PROD;
-  } else {
-    BUNDLE_PATHS['CSS'] = CONFIG.TEMPLATE_PATHS.CSS.DEV;
-    BUNDLE_PATHS['JS'] = CONFIG.TEMPLATE_PATHS.JS.DEV;
+    env = 'PROD';
   }
   delete require.cache[require.resolve(CONFIG.DATA.INPUT)]; // clear the json from cache before loading
   return gulp.src('src/pages/*.html')
@@ -114,8 +71,8 @@ gulp.task('templates', function () {
     }))
     .pipe(data(function() {
         return {
-          "CSS_BUNDLE": BUNDLE_PATHS.CSS,
-          "JS_BUNDLE": BUNDLE_PATHS.JS
+          "CSS_BUNDLE": CONFIG.TEMPLATE_PATHS.CSS[env],
+          "JS_BUNDLE": CONFIG.TEMPLATE_PATHS.JS[env]
         };
     }))
     .pipe(nunjucksRender())
