@@ -54,6 +54,10 @@ var CONFIG = {
       DEV: 'styles/screen.css',
       PROD: 'styles/screen.min.css'
     }
+  },
+  MEDIA: {
+    INPUT: './src/media/**/*',
+    OUTPUT: './web/media'
   }
 };
 var SHOULD_WATCH = false;
@@ -123,14 +127,14 @@ gulp.task('setWatchToTrue', function() {
 });
 
 gulp.task('copyMedia', function() {
-  del(['web/media']).then(function() {
-    gulp.src('./src/media/**/*')
+  del([CONFIG.MEDIA.OUTPUT]).then(function() {
+    gulp.src(CONFIG.MEDIA.INPUT)
       .pipe(imagemin({
             progressive: true,
             svgoPlugins: [{removeViewBox: false}],
             use: [pngquant()]
         }))
-      .pipe(gulp.dest('./web/media'));
+      .pipe(gulp.dest(CONFIG.MEDIA.OUTPUT));
   });
 });
 
