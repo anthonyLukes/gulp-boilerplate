@@ -1,5 +1,6 @@
 module.exports = {
   PROD_FLAG: 'prod',
+  SERVE_FLAG: 'serve',
   SASS: {
     INPUT: './src/styles/**/*.scss',
     OUTPUT: './web/styles',
@@ -37,5 +38,9 @@ module.exports = {
   MEDIA: {
     INPUT: './src/media/**/*',
     OUTPUT: './web/media'
+  },
+  CONNECT: {
+    PORT_NUMBER: 8000,
+    LIVE_RELOAD: true
   }
 }

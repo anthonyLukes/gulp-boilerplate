@@ -19,6 +19,7 @@ This is a front-end boilerplate to aid in standing up a client-side application 
 * Run `bower install` to install any library dependencies (initially includes jQuery)
 * Run `gulp` or `gulp build` to build the project files one time. The files are compiled from `/src` to `/web`.
 
-### Other gulp tasks available ###
-* `gulp watch` will build the site and start watching files (.scss, .html, media files (any file in `/src/media`), .js, or .json) for changes. Incremental builds will occur depending on the type of file that was updated (i.e. changes to .scss files will only rebuild the css). The watch method also utilizes Connect middleware as a static webserver with [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en).
-* `gulp --prod` will rebuild the site and minify the CSS and JS (intended for production releases)
+### Other gulp tasks and options available ###
+* `gulp watch` will build the site and start watching files (.scss, .html, media files (any file in `/src/media`), .js, or .json) for changes. Incremental builds will occur depending on the type of file that was updated (i.e. changes to .scss files will only rebuild the css).
+* `gulp --prod` will rebuild the site and minify the CSS and JS (intended for production releases). The HTML templates will include the minified versions of the bundled CSS and JS files automatically.
+* `gulp --serve` or `gulp watch --serve` will start up a static local webserver using Connect middleware and [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en).

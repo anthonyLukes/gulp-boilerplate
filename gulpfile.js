@@ -23,6 +23,7 @@ var connect = require('gulp-connect');
 var CONFIG = require('./build-config.js');
 
 var SHOULD_WATCH = false;
+var USE_SERVER = argv[CONFIG.SERVE_FLAG];
 var IS_PROD = argv[CONFIG.PROD_FLAG];
 
 gulp.task('sass', function () {
@@ -33,7 +34,7 @@ gulp.task('sass', function () {
     .pipe(sass(CONFIG.SASS.OPTIONS).on('error', sass.logError))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(CONFIG.SASS.OUTPUT))
-    .pipe(connect.reload());
+    .pipe(gulpif(USE_SERVER,connect.reload()));
 });
 
 
@@ -50,7 +51,7 @@ gulp.task('webpack', function(callback) {
   return gulp.src(CONFIG.JS.INPUT)
     .pipe(gulpWebpack(webpackconfig, webpack, callback))
     .pipe(gulp.dest(CONFIG.JS.OUTPUT_DIR))
-    .pipe(connect.reload());
+    .pipe(gulpif(USE_SERVER, connect.reload()));
 });
 
 gulp.task('templates', function () {
@@ -73,7 +74,7 @@ gulp.task('templates', function () {
     }))
     .pipe(nunjucksRender())
     .pipe(gulp.dest('web'))
-    .pipe(connect.reload());
+    .pipe(gulpif(USE_SERVER, connect.reload()));
 });
 
 gulp.task('setWatchToTrue', function() {
@@ -88,20 +89,22 @@ gulp.task('copyMedia', function() {
             svgoPlugins: [{removeViewBox: false}],
             use: [pngquant()]
         }))
-      .pipe(gulp.dest(CONFIG.MEDIA.OUTPUT));
+      .pipe(gulp.dest(CONFIG.MEDIA.OUTPUT))
+      .pipe(gulpif(USE_SERVER, connect.reload()));
   });
 });
 
-gulp.task('connectDev', function () {
-  var portNumber = 8000;
-  connect.server({
-    root: ['web'],
-    port: portNumber,
-    livereload: true
-  });
+gulp.task('tryConnect', function () {
+  if (USE_SERVER) {
+      connect.server({
+        root: ['web'],
+        port: CONFIG.CONNECT.PORT_NUMBER,
+        livereload: CONFIG.CONNECT.LIVE_RELOAD
+      });
+    }
 });
 
-gulp.task('watch', ['setWatchToTrue','build','connectDev'], function() {
+gulp.task('watch', ['setWatchToTrue','build','tryConnect'], function() {
   // setup up watches
   gulp.watch(CONFIG.SASS.INPUT, ['sass']);
   gulp.watch(CONFIG.JS.INPUT_GLOB, ['webpack']);
@@ -110,7 +113,7 @@ gulp.task('watch', ['setWatchToTrue','build','connectDev'], function() {
   gulp.watch(CONFIG.MEDIA.INPUT, ['copyMedia']);
 });
 
-gulp.task('build', ['sass','webpack','templates','copyMedia'], function() {
+gulp.task('build', ['sass','webpack','templates','copyMedia', 'tryConnect'], function() {
   if (IS_PROD) {
     // uglify js
     gulp
