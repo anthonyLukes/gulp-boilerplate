@@ -33,5 +33,14 @@ This is a front-end boilerplate to aid in standing up a client-side application 
 5. Update the username and password fields on line #3 to your liking
 6. If you don't have a git repo already run `git init` to initialize a git repo
 7. Run `heroku create` to add a new Heroku app
-8. Run `git add .` and `git commit -m "you git message here"`
-9. Run `git push heroku master`
+8. Make sure that you're using the ruby buildpack by running the following command 
+```
+heroku buildpacks:set https://github.com/heroku/heroku-buildpack-ruby
+```
+9. Add a second buildpack to allow node to build
+```
+heroku buildpacks:add --index 1 https://github.com/heroku/heroku-buildpack-nodejs
+```
+10. Run `git add .` and `git commit -m "you git message here"`
+11. Run `git push heroku master`
+12. When that's done deploying run `heroku open` to view your site in the browser.
