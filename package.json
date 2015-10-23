@@ -13,7 +13,7 @@
   "author": "",
   "license": "MIT",
   "homepage": "https://bitbucket.org/anthonyLukes/gulp-boilerplate#readme",
-  "devDependencies": {
+  "dependencies": {
     "bower": "^1.6.3",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
