@@ -26,3 +26,12 @@ This is a front-end boilerplate to aid in standing up a client-side application 
 * `gulp --serve` or `gulp watch --serve` will start up a static local webserver using Connect middleware and [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en).
 
 ### Deployment to Heroku
+1. Make sure that you have ruby installed and that it's in your path
+2. Install the bundler gem
+3. Sign up with a [Heroku](http://heroku.com) account
+4. Install the [Heroku Toolbelt](https://toolbelt.heroku.com/)
+5. Update the username and password fields on line #3 to your liking
+6. If you don't have a git repo already run `git init` to initialize a git repo
+7. Run `heroku create` to add a new Heroku app
+8. Run `git add .` and `git commit -m "you git message here"`
+9. Run `git push heroku master`
