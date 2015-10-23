@@ -11,6 +11,7 @@ This is a front-end boilerplate to aid in standing up a client-side application 
 * Static webserver using Connect and LiveReload
 * Production minification of CSS and JavaScript
 * Image optimization
+* Heroku configuration files and instructions for deploying static files to staging server with basic auth
 
 ## How do I get set up? ##
 
@@ -23,3 +24,5 @@ This is a front-end boilerplate to aid in standing up a client-side application 
 * `gulp watch` will build the site and start watching files (.scss, .html, media files (any file in `/src/media`), .js, or .json) for changes. Incremental builds will occur depending on the type of file that was updated (i.e. changes to .scss files will only rebuild the css).
 * `gulp --prod` will rebuild the site and minify the CSS and JS (intended for production releases). The HTML templates will include the minified versions of the bundled CSS and JS files automatically.
 * `gulp --serve` or `gulp watch --serve` will start up a static local webserver using Connect middleware and [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en).
+
+### Deployment to Heroku
