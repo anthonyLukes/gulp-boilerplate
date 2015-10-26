@@ -1,7 +1,9 @@
-.o-grid {
-    @include clearfix();
-}
+@include bpmin($SCREEN_MED) {
+    .o-grid {
+        @include clearfix();
+    }
 
-.o-grid__col {
-    float: left;
+    .o-grid__col {
+        float: left;
+    }
 }

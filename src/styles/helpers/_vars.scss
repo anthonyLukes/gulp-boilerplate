@@ -1,2 +1,6 @@
 $BG_COLOR: #dcdcdc;
 $BASE_FONT_SIZE: 14px;
+
+// SCREEN SIZES
+$SCREEN_MED: map-deep-get($SHARED_CONFIG, "screenSizes", "medium");
+$SCREEN_LARGE: map-deep-get($SHARED_CONFIG, "screenSizes", "large");

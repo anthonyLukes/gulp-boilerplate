@@ -1,24 +1,26 @@
 'use strict';
 
-var gulp = require('gulp');
-var gutil = require("gulp-util");
-var sourcemaps = require('gulp-sourcemaps');
-var sass = require('gulp-sass');
-var webpack = require('webpack');
-var gulpWebpack = require('webpack-stream');
 var argv = require('yargs').argv;
-var gulpif = require('gulp-if');
-var rename = require('gulp-rename');
-var uglify = require('gulp-uglify');
+var connect = require('gulp-connect');
 var cssmin = require('gulp-cssmin');
-var del = require('del');
-var sequence  = require('run-sequence');
-var nunjucksRender = require('gulp-nunjucks-render');
 var data = require('gulp-data');
+var del = require('del');
 var env = require('gulp-env');
 var imagemin = require('gulp-imagemin');
+var fs = require('fs');
+var gulp = require('gulp');
+var gulpif = require('gulp-if');
+var gulpWebpack = require('webpack-stream');
+var gutil = require("gulp-util");
+var jsonSass = require('json-sass');
+var nunjucksRender = require('gulp-nunjucks-render');
+var rename = require('gulp-rename');
 var pngquant = require('imagemin-pngquant');
-var connect = require('gulp-connect');
+var sass = require('gulp-sass');
+var source = require('vinyl-source-stream');
+var sourcemaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
+var webpack = require('webpack');
 
 var CONFIG = require('./build-config.js');
 
@@ -26,7 +28,7 @@ var SHOULD_WATCH = false;
 var USE_SERVER = argv[CONFIG.SERVE_FLAG];
 var IS_PROD = argv[CONFIG.PROD_FLAG];
 
-gulp.task('sass', function () {
+gulp.task('sass', ['distributeConfig'], function () {
   del(['web/styles/*']);
   return gulp
     .src(CONFIG.SASS.INPUT)
@@ -37,8 +39,7 @@ gulp.task('sass', function () {
     .pipe(gulpif(USE_SERVER,connect.reload()));
 });
 
-
-gulp.task('webpack', function(callback) {
+gulp.task('webpack', ['distributeConfig'], function(callback) {
   del(['web/js/*']);
   var webpackconfig = require('./webpack-config.js');
   var callback = function(err, stats) {
@@ -54,7 +55,7 @@ gulp.task('webpack', function(callback) {
     .pipe(gulpif(USE_SERVER, connect.reload()));
 });
 
-gulp.task('templates', function () {
+gulp.task('templates', ['distributeConfig'], function () {
   nunjucksRender.nunjucks.configure(['src/'], {watch: false});
   del(['web/*.html']);
   var env = 'DEV';
@@ -94,6 +95,19 @@ gulp.task('copyMedia', function() {
   });
 });
 
+gulp.task('distributeConfig', function() {
+  // output scss variables
+  fs.createReadStream(CONFIG.SHARED_CONFIG.INPUT)
+  .pipe(jsonSass({
+    prefix: '$SHARED_CONFIG: ',
+  }))
+  .pipe(fs.createWriteStream(CONFIG.SHARED_CONFIG.OUTPUT.SCSS.DIR+CONFIG.SHARED_CONFIG.OUTPUT.SCSS.FILE));
+  // output js variables
+  gulp.src(CONFIG.SHARED_CONFIG.INPUT)
+    .pipe(rename(CONFIG.SHARED_CONFIG.OUTPUT.JS.FILE))
+    .pipe(gulp.dest(CONFIG.SHARED_CONFIG.OUTPUT.JS.DIR));
+});
+
 gulp.task('tryConnect', function () {
   if (USE_SERVER) {
       connect.server({
@@ -111,9 +125,10 @@ gulp.task('watch', ['setWatchToTrue','build','tryConnect'], function() {
   gulp.watch(CONFIG.HTML.INPUT_ALL, ['templates']);
   gulp.watch(CONFIG.DATA.INPUT, ['templates']);
   gulp.watch(CONFIG.MEDIA.INPUT, ['copyMedia']);
+  gulp.watch(CONFIG.SHARED_CONFIG.INPUT, ['distributeConfig', 'sass', 'webpack', 'templates']);
 });
 
-gulp.task('build', ['sass','webpack','templates','copyMedia', 'tryConnect'], function() {
+gulp.task('build', ['distributeConfig','sass','webpack','templates','copyMedia', 'tryConnect'], function() {
   if (IS_PROD) {
     // uglify js
     gulp

@@ -42,5 +42,18 @@ module.exports = {
   CONNECT: {
     PORT_NUMBER: 8000,
     LIVE_RELOAD: true
+  },
+  SHARED_CONFIG: {
+    INPUT: './src/data/sharedConfig.json',
+    OUTPUT: {
+      SCSS: {
+        DIR: './src/styles/helpers/',
+        FILE: '_sharedConfig.scss'
+      },
+      JS: {
+        DIR: './src/js/config/',
+        FILE: 'sharedConfig.json'
+      }
+    }
   }
 }
