@@ -12,6 +12,7 @@ var gulp = require('gulp');
 var gulpif = require('gulp-if');
 var gulpWebpack = require('webpack-stream');
 var gutil = require("gulp-util");
+var jshint = require('gulp-jshint');
 var jsonSass = require('json-sass');
 var nunjucksRender = require('gulp-nunjucks-render');
 var rename = require('gulp-rename');
@@ -55,7 +56,7 @@ gulp.task('webpack', ['distributeConfig'], function(callback) {
     .pipe(gulpif(USE_SERVER, connect.reload()));
 });
 
-gulp.task('templates', ['distributeConfig'], function () {
+gulp.task('templates', ['distributeConfig', 'jsHint'], function () {
   nunjucksRender.nunjucks.configure(['src/'], {watch: false});
   del(['web/*.html']);
   var env = 'DEV';
@@ -118,7 +119,14 @@ gulp.task('tryConnect', function () {
     }
 });
 
-gulp.task('watch', ['setWatchToTrue','build','tryConnect'], function() {
+gulp.task('jsHint', function() {
+  return gulp.src(CONFIG.JS.INPUT_GLOB)
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('watch', ['setWatchToTrue', 'build', 'tryConnect'], function() {
   // setup up watches
   gulp.watch(CONFIG.SASS.INPUT, ['sass']);
   gulp.watch(CONFIG.JS.INPUT_GLOB, ['webpack']);
@@ -128,7 +136,7 @@ gulp.task('watch', ['setWatchToTrue','build','tryConnect'], function() {
   gulp.watch(CONFIG.SHARED_CONFIG.INPUT, ['distributeConfig', 'sass', 'webpack', 'templates']);
 });
 
-gulp.task('build', ['distributeConfig','sass','webpack','templates','copyMedia', 'tryConnect'], function() {
+gulp.task('build', ['jsHint', 'distributeConfig', 'sass', 'webpack', 'templates', 'copyMedia', 'tryConnect'], function() {
   if (IS_PROD) {
     // uglify js
     gulp

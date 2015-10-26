@@ -1,5 +1,9 @@
-require('script!jquery/dist/jquery.js');
-var myModule = require('./MyModule.js');
+(function () {
+   'use strict';
+   require('script!jquery/dist/jquery.js');
+   var MyModule = require('./MyModule.js');
 
-var charlie = new myModule({name: 'Charles'});
-charlie.logOptions();
+   var charlie = new MyModule({name: 'Charles'});
+   charlie.logOptions();
+}());
+
