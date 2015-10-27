@@ -18,6 +18,7 @@ var nunjucksRender = require('gulp-nunjucks-render');
 var rename = require('gulp-rename');
 var pngquant = require('imagemin-pngquant');
 var sass = require('gulp-sass');
+var sassLint = require('gulp-sass-lint');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
@@ -40,7 +41,19 @@ gulp.task('sass', ['distributeConfig'], function () {
     .pipe(gulpif(USE_SERVER,connect.reload()));
 });
 
-gulp.task('webpack', ['distributeConfig'], function(callback) {
+// @TODO: This sass lint plugin throws errors in indentor.
+// Try this out down the road and see if the error has been fixed
+//
+// gulp.task('trySassLint', function () {
+//   if (!IS_PROD) {
+//     gulp.src(CONFIG.SASS.INPUT)
+//       .pipe(sassLint())
+//       .pipe(sassLint.format())
+//       .pipe(sassLint.failOnError())
+//     }
+// });
+
+gulp.task('webpack', ['distributeConfig', 'tryJsHint'], function(callback) {
   del(['web/js/*']);
   var webpackconfig = require('./webpack-config.js');
   var callback = function(err, stats) {
@@ -56,7 +69,16 @@ gulp.task('webpack', ['distributeConfig'], function(callback) {
     .pipe(gulpif(USE_SERVER, connect.reload()));
 });
 
-gulp.task('templates', ['distributeConfig', 'jsHint'], function () {
+gulp.task('tryJsHint', function() {
+  if (!IS_PROD) {
+    return gulp.src(CONFIG.JS.INPUT_GLOB)
+      .pipe(jshint())
+      .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(jshint.reporter('fail'));
+  }
+});
+
+gulp.task('templates', ['distributeConfig'], function () {
   nunjucksRender.nunjucks.configure(['src/'], {watch: false});
   del(['web/*.html']);
   var env = 'DEV';
@@ -119,13 +141,6 @@ gulp.task('tryConnect', function () {
     }
 });
 
-gulp.task('jsHint', function() {
-  return gulp.src(CONFIG.JS.INPUT_GLOB)
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'));
-});
-
 gulp.task('watch', ['setWatchToTrue', 'build', 'tryConnect'], function() {
   // setup up watches
   gulp.watch(CONFIG.SASS.INPUT, ['sass']);
@@ -136,7 +151,7 @@ gulp.task('watch', ['setWatchToTrue', 'build', 'tryConnect'], function() {
   gulp.watch(CONFIG.SHARED_CONFIG.INPUT, ['distributeConfig', 'sass', 'webpack', 'templates']);
 });
 
-gulp.task('build', ['jsHint', 'distributeConfig', 'sass', 'webpack', 'templates', 'copyMedia', 'tryConnect'], function() {
+gulp.task('build', ['tryJsHint', 'distributeConfig', 'sass', 'webpack', 'templates', 'copyMedia', 'tryConnect'], function() {
   if (IS_PROD) {
     // uglify js
     gulp
