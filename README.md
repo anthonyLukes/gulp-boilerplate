@@ -1,6 +1,6 @@
 # Overview #
 
-This is a front-end boilerplate to aid in standing up a client-side application quickly. It's is intended to be platform agnostic and easy to extend for your needs. The only dependecies it has are node.js and npm. It utilizes [gulp](http://gulpjs.com/) as well as [webpack](https://webpack.github.io/) to compile and minify files and also includes [bower](http://bower.io/) for library package management.
+This is a front-end boilerplate to aid in standing up a client-side application quickly. It's is intended to be platform agnostic and easy to extend for your needs. The only dependencies it has are node.js and npm. It utilizes [gulp](http://gulpjs.com/) as well as [webpack](https://webpack.github.io/) to compile and minify files and also includes [bower](http://bower.io/) for library package management.
 
 ## What it includes ##
 
