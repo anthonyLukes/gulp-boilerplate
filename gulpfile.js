@@ -17,6 +17,7 @@ var jsonSass = require('json-sass');
 var nunjucksRender = require('gulp-nunjucks-render');
 var rename = require('gulp-rename');
 var pngquant = require('imagemin-pngquant');
+var prettify = require('gulp-prettify');
 var sass = require('gulp-sass');
 var sassLint = require('gulp-sass-lint');
 var source = require('vinyl-source-stream');
@@ -97,6 +98,7 @@ gulp.task('templates', ['distributeConfig'], function () {
         };
     }))
     .pipe(nunjucksRender())
+    .pipe(prettify({indent_size: 4}))
     .pipe(gulp.dest('web'))
     .pipe(gulpif(USE_SERVER, connect.reload()));
 });
